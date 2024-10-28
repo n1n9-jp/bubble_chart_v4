@@ -1,13 +1,9 @@
 function bubbleChart() {
-  // Constants for sizing
   var width = 940;
   var height = 600;
 
-  // tooltip for mouseover functionality
   var tooltip = floatingTooltip('gates_tooltip', 240);
 
-  // Locations to move bubbles towards, depending
-  // on which view mode is selected.
   var center = { x: width / 2, y: height / 2 };
 
   var yearCenters = {
@@ -16,17 +12,14 @@ function bubbleChart() {
     2010: { x: 2 * width / 3, y: height / 2 }
   };
 
-  // X locations of the year titles.
   var yearsTitleX = {
     2008: 160,
     2009: width / 2,
     2010: width - 160
   };
 
-  // @v4 strength to apply to the position forces
   var forceStrength = 0.03;
 
-  // These will be set in create_nodes and create_vis
   var svg = null;
   var bubbles = null;
   var nodes = [];
@@ -71,24 +64,19 @@ function bubbleChart() {
       };
     });
 
-    // sort them to prevent occlusion of smaller nodes.
     myNodes.sort(function (a, b) { return b.value - a.value; });
 
     return myNodes;
   }
 
   var chart = function chart(selector, rawData) {
-    // convert raw data into nodes data
     nodes = createNodes(rawData);
 
-    // Create a SVG element inside the provided selector
-    // with desired size.
     svg = d3.select(selector)
       .append('svg')
       .attr('width', width)
       .attr('height', height);
 
-    // Bind nodes data to what will become DOM elements to represent them.
     bubbles = svg.selectAll('.bubble')
       .data(nodes, function (d) { return d.id; });
 
@@ -101,20 +89,14 @@ function bubbleChart() {
       .on('mouseover', showDetail)
       .on('mouseout', hideDetail);
 
-    // @v4 Merge the original empty selection and the enter selection
     bubbles = bubbles.merge(bubblesE);
 
-    // Fancy transition to make bubbles appear, ending with the
-    // correct radius
     bubbles.transition()
       .duration(2000)
       .attr('r', function (d) { return d.radius; });
 
-    // Set the simulation's nodes to our newly created nodes array.
-    // @v4 Once we set the nodes, the simulation will start running automatically!
     simulation.nodes(nodes);
 
-    // Set initial layout to single group.
     groupBubbles();
   };
 
@@ -132,10 +114,8 @@ function bubbleChart() {
   function groupBubbles() {
     hideYearTitles();
 
-    // @v4 Reset the 'x' force to draw the bubbles to the center.
     simulation.force('x', d3.forceX().strength(forceStrength).x(center.x));
 
-    // @v4 We can reset the alpha value and restart the simulation
     simulation.alpha(1).restart();
   }
 
@@ -143,16 +123,11 @@ function bubbleChart() {
   function splitBubbles() {
     showYearTitles();
 
-    // @v4 Reset the 'x' force to draw the bubbles to their year centers
     simulation.force('x', d3.forceX().strength(forceStrength).x(nodeYearPos));
 
-    // @v4 We can reset the alpha value and restart the simulation
     simulation.alpha(1).restart();
   }
 
-  /*
-   * Hides Year title displays.
-   */
   function hideYearTitles() {
     svg.selectAll('.year').remove();
   }
@@ -172,7 +147,6 @@ function bubbleChart() {
 
 
   function showDetail(d) {
-    // change outline to indicate hover state.
     d3.select(this).attr('stroke', 'black');
 
     var content = '<span class="name">Title: </span><span class="value">' +
@@ -188,9 +162,6 @@ function bubbleChart() {
     tooltip.showTooltip(content, d3.event);
   }
 
-  /*
-   * Hides tooltip
-   */
   function hideDetail(d) {
     // reset outline
     d3.select(this)
