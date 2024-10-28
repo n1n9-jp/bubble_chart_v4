@@ -1,10 +1,12 @@
 function bubbleChart() {
-  var width = 940;
-  var height = 600;
 
-  var tooltip = floatingTooltip('gates_tooltip', 240);
+      var width = 940;
+      var height = 600;
 
-  var center = { x: width / 2, y: height / 2 };
+      var tooltip = floatingTooltip('gates_tooltip', 240);
+
+      // 初期状態用のcenters
+      var centersDefault = { x: width / 2, y: height / 2 };
 
   var yearCenters = {
     2008: { x: width / 3, y: height / 2 },
@@ -12,21 +14,20 @@ function bubbleChart() {
     2010: { x: 2 * width / 3, y: height / 2 }
   };
 
-  var yearsTitleX = {
-    2008: 160,
-    2009: width / 2,
-    2010: width - 160
-  };
+      var yearsTitleX = {
+        2008: 160,
+        2009: width / 2,
+        2010: width - 160
+      };
 
-  var forceStrength = 0.03;
+      // @v4 strength to apply to the position forces
+      var forceStrength = 0.03;
 
-  var svg = null;
-  var bubbles = null;
-  var nodes = [];
+      // これらはcreate_nodesとcreate_visで設定されます
+      var svg = null;
+      var bubbles = null;
+      var nodes = [];
 
-  function charge(d) {
-    return -Math.pow(d.radius, 2.0) * forceStrength;
-  }
 
   var simulation = d3.forceSimulation()
     .velocityDecay(0.2)
@@ -61,6 +62,10 @@ function bubbleChart() {
         year: d.start_year,
         x: Math.random() * 900,
         y: Math.random() * 800
+
+      function charge(d) {
+        return -Math.pow(d.radius, 2.0) * forceStrength;
+      }
       };
     });
 
