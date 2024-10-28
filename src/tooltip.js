@@ -1,10 +1,18 @@
 /*
- * Creates tooltip with provided id that
- * floats on top of visualization.
- * Most styling is expected to come from CSS
- * so check out bubble_chart.css for more details.
- */
+* 指定された ID を持つツールチップを作成し、可視化の上に浮かびます。
+* ほとんどのスタイルは CSS から取得される想定です。
+* 詳細については bubble_chart.css を参照してください。
+*/
+
+/*
+function floatingTooltip(tooltipId, width);
+    function showTooltip(content, event);
+    function hideTooltip();
+    function updatePosition(event)
+*/
+
 function floatingTooltip(tooltipId, width) {
+
   // Local variable to hold tooltip div for
   // manipulation in other functions.
   var tt = d3.select('body')
