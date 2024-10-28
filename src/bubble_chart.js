@@ -29,42 +29,43 @@ function bubbleChart() {
       var nodes = [];
 
 
-  var simulation = d3.forceSimulation()
-    .velocityDecay(0.2)
     .force('x', d3.forceX().strength(forceStrength).x(center.x))
     .force('y', d3.forceY().strength(forceStrength).y(center.y))
-    .force('charge', d3.forceManyBody().strength(charge))
-    .on('tick', ticked);
 
-  simulation.stop();
+      var simulation = d3.forceSimulation()
+        .velocityDecay(0.2) // ノード（バブル）の移動速度の減衰率を設定
+        .force('charge', d3.forceManyBody().strength(charge))
+        .on('tick', ticked);
 
-  var fillColor = d3.scaleOrdinal()
-    .domain(['low', 'medium', 'high'])
-    .range(['#d84b2a', '#beccae', '#7aa25c']);
+      simulation.stop();
+
+      var fillColor = d3.scaleOrdinal()
+        .domain(['low', 'medium', 'high'])
+        .range(['#d84b2a', '#beccae', '#7aa25c']);
 
 
   function createNodes(rawData) {
     var maxAmount = d3.max(rawData, function (d) { return +d.total_amount; });
 
-    var radiusScale = d3.scalePow()
-      .exponent(0.5)
-      .range([2, 85])
-      .domain([0, maxAmount]);
 
-    var myNodes = rawData.map(function (d) {
-      return {
-        id: d.id,
-        radius: radiusScale(+d.total_amount),
-        value: +d.total_amount,
-        name: d.grant_title,
-        org: d.organization,
-        group: d.group,
-        year: d.start_year,
-        x: Math.random() * 900,
-        y: Math.random() * 800
 
       function charge(d) {
         return -Math.pow(d.radius, 2.0) * forceStrength;
+          var radiusScale = d3.scalePow()
+            .exponent(0.5)
+            .range([2, 85])
+            .domain([0, maxAmount]);
+          var myNodes = rawData.map(function (d) {
+            return {
+              id: d.id,
+              radius: radiusScale(+d.total_amount),
+              value: +d.total_amount,
+              name: d.grant_title,
+              org: d.organization,
+              group: d.group,
+              year: d.start_year,
+              x: Math.random() * 900,
+              y: Math.random() * 800
       }
       };
     });
