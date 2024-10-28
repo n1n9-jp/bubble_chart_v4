@@ -11,11 +11,15 @@ function bubbleChart() {
       // 初期状態用のcenters
       var centersDefault = { x: width / 2, y: height / 2 };
 
-  var yearCenters = {
-    2008: { x: width / 3, y: height / 2 },
-    2009: { x: width / 2, y: height / 2 },
-    2010: { x: 2 * width / 3, y: height / 2 }
-  };
+      // groupBubbles用のcenters
+      var centersGroup = { x: width / 2, y: height / 2 };
+
+      // splitBubbles用のcenters
+      var centersSplit = {
+        2008: { x: width / 3, y: height / 2 },
+        2009: { x: width / 2, y: height / 2 },
+        2010: { x: 2 * width / 3, y: height / 2 }
+      };
 
       var yearsTitleX = {
         2008: 160,
@@ -32,8 +36,6 @@ function bubbleChart() {
       var nodes = [];
 
 
-    .force('x', d3.forceX().strength(forceStrength).x(center.x))
-    .force('y', d3.forceY().strength(forceStrength).y(center.y))
 
       function charge(d) {
         return -Math.pow(d.radius, 2.0) * forceStrength;
@@ -43,6 +45,8 @@ function bubbleChart() {
   
       var simulation = d3.forceSimulation()
         .velocityDecay(0.2) // ノード（バブル）の移動速度の減衰率を設定
+        .force('x', d3.forceX().strength(forceStrength).x(centersDefault.x))
+        .force('y', d3.forceY().strength(forceStrength).y(centersDefault.y))
         .force('charge', d3.forceManyBody().strength(charge))
         .on('tick', ticked);
 
@@ -143,16 +147,13 @@ function bubbleChart() {
         simulation.alpha(1).restart();
       }
 
-  function nodeYearPos(d) {
-    return yearCenters[d.year].x;
-  }
 
 
       function splitBubbles() {
         showYearTitles();
 
-    simulation.force('x', d3.forceX().strength(forceStrength).x(center.x));
         // @v4 Reset the 'x' force to draw the bubbles to their year centers
+        simulation.force('x', d3.forceX().strength(forceStrength).x(nodeYearPos));
 
         // @v4 We can reset the alpha value and restart the simulation
         simulation.alpha(1).restart();
