@@ -103,7 +103,7 @@ function bubbleChart() {
               .attr("viewBox", "0 0 "+ width + " " + height)
               .attr("preserveAspectRatio", "xMidYMid");
 
-            bubbles = svg.selectAll('.bubble')
+            bubbles = svgContainer.selectAll('.bubble')
               .data(nodes, function (d) { return d.id; });
 
             var bubblesE = bubbles.enter().append('circle')
