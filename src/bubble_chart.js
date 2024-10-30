@@ -60,7 +60,8 @@ function bubbleChart() {
 
       function createNodes(rawData) {
 
-          var maxAmount = d3.max(rawData, function (d) { return +d.total_amount; });
+          const dataArray = Array.from(rawData);
+          var maxAmount = d3.max(dataArray, d => +d.total_amount);
 
           var radiusScale = d3.scalePow()
             .exponent(0.5)
@@ -164,17 +165,29 @@ function bubbleChart() {
         svg.selectAll('.year').remove();
       }
 
-
+      // 年の表示位置に、yearsTitleXではなく、centersSplitを使用できるかテスト
       function showYearTitles() {
         // Another way to do this would be to create
         // the year texts once and then just hide them.
-        var yearsData = d3.keys(yearsTitleX);
+        
+        // var yearsData = d3.keys(centersSplit);
+        // var years = svg.selectAll('.year')
+        //   .data(yearsData);
+
+        // years.enter().append('text')
+        //   .attr('class', 'year')
+        //   .attr('x', function (d) { return yearsTitleX[d]; })
+        //   .attr('y', 40)
+        //   .attr('text-anchor', 'middle')
+        //   .text(function (d) { return d; });
+
+        var yearsData = Object.keys(centersSplit);
         var years = svg.selectAll('.year')
           .data(yearsData);
 
         years.enter().append('text')
           .attr('class', 'year')
-          .attr('x', function (d) { return yearsTitleX[d]; })
+          .attr('x', function (d) { return centersSplit[d].x; })
           .attr('y', 40)
           .attr('text-anchor', 'middle')
           .text(function (d) { return d; });
@@ -182,7 +195,7 @@ function bubbleChart() {
 
 
 
-      function showDetail(d) {
+      function showDetail(event, d) {
 
         d3.select(this).attr('stroke', 'black');
 
@@ -196,7 +209,7 @@ function bubbleChart() {
                       d.year +
                       '</span>';
 
-        tooltip.showTooltip(content, d3.event);
+        tooltip.showTooltip(content, event);
       }
 
 
@@ -231,11 +244,7 @@ var myBubbleChart = bubbleChart();
 
 
 
-function display(error, data) {
-  if (error) {
-    console.log(error);
-  }
-
+function display(data) {
   myBubbleChart('#vis', data);
 }
 
@@ -278,7 +287,9 @@ function addCommas(nStr) {
 
 
 // Load the data.
-d3.csv('data/gates_money.csv', display);
+d3.csv('data/gates_money.csv').then(display).catch(error => {
+  console.log(error);
+});
 
 // setup the buttons.
 setupButtons();
