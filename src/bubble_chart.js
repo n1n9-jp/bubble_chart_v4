@@ -32,7 +32,7 @@ function bubbleChart() {
       var forceStrength = 0.03;
 
       // これらはcreate_nodesとcreate_visで設定されます
-      var svg = null;
+      var svgContainer = null;
       var bubbles = null;
       var nodes = [];
 
@@ -95,10 +95,13 @@ function bubbleChart() {
 
             nodes = createNodes(rawData);
 
-            svg = d3.select(selector)
+            svgContainer = d3.select(selector)
               .append('svg')
               .attr('width', width)
-              .attr('height', height);
+              .attr('height', height)
+              .attr("id", "svgArea")
+              .attr("viewBox", "0 0 "+ width + " " + height)
+              .attr("preserveAspectRatio", "xMidYMid");
 
             bubbles = svg.selectAll('.bubble')
               .data(nodes, function (d) { return d.id; });
@@ -163,7 +166,7 @@ function bubbleChart() {
 
 
       function hideYearTitles() {
-        svg.selectAll('.year').remove();
+        svgContainer.selectAll('.year').remove();
       }
 
       // 年の表示位置に、yearsTitleXではなく、centersSplitを使用できるかテスト
@@ -172,7 +175,7 @@ function bubbleChart() {
         // the year texts once and then just hide them.
         
         // var yearsData = d3.keys(centersSplit);
-        // var years = svg.selectAll('.year')
+        // var years = svgContainer.selectAll('.year')
         //   .data(yearsData);
 
         // years.enter().append('text')
@@ -183,7 +186,7 @@ function bubbleChart() {
         //   .text(function (d) { return d; });
 
         var yearsData = Object.keys(centersSplit);
-        var years = svg.selectAll('.year')
+        var years = svgContainer.selectAll('.year')
           .data(yearsData);
 
         years.enter().append('text')
