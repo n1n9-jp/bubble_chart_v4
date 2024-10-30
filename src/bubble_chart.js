@@ -16,16 +16,17 @@ function bubbleChart() {
 
       // splitBubbles用のcenters
       var centersSplit = {
-        2008: { x: width / 3, y: height / 2 },
-        2009: { x: width / 2, y: height / 2 },
-        2010: { x: 2 * width / 3, y: height / 2 }
+        2007: { x: (width/5) * 1, y: height / 2 },
+        2008: { x: (width/5) * 2, y: height / 2 },
+        2009: { x: (width/5) * 3, y: height / 2 },
+        2010: { x: (width/5) * 4, y: height / 2 }
       };
 
-      var yearsTitleX = {
-        2008: 160,
-        2009: width / 2,
-        2010: width - 160
-      };
+      // var yearsTitleX = {
+      //   2008: 160,
+      //   2009: width / 2,
+      //   2010: width - 160
+      // };
 
       // @v4 strength to apply to the position forces
       var forceStrength = 0.03;
@@ -74,7 +75,7 @@ function bubbleChart() {
               radius: radiusScale(+d.total_amount),
               value: +d.total_amount,
               name: d.grant_title,
-              org: d.organization,
+              // org: d.organization,
               group: d.group,
               year: d.start_year,
               x: Math.random() * 900,
@@ -287,7 +288,7 @@ function addCommas(nStr) {
 
 
 // Load the data.
-d3.csv('data/gates_money.csv').then(display).catch(error => {
+d3.csv('data/data.csv').then(display).catch(error => {
   console.log(error);
 });
 
