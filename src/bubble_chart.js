@@ -3,6 +3,11 @@
 
 function bubbleChart() {
 
+
+      /* --------------------
+        初期設定
+      -------------------- */
+
       var width = 940;
       var height = 600;
 
@@ -37,6 +42,11 @@ function bubbleChart() {
       var nodes = [];
 
 
+
+
+      /* --------------------
+        関数
+      -------------------- */
 
       function charge(d) {
         return -Math.pow(d.radius, 2.0) * forceStrength;
@@ -91,6 +101,9 @@ function bubbleChart() {
 
 
 
+      /* --------------------
+        チャート生成
+      -------------------- */
       var chart = function chart(selector, rawData) {
 
             nodes = createNodes(rawData);
@@ -127,6 +140,10 @@ function bubbleChart() {
       };
 
 
+
+      /* --------------------
+        関数
+      -------------------- */
 
       function ticked() {
         bubbles
@@ -171,26 +188,15 @@ function bubbleChart() {
 
       // 年の表示位置に、yearsTitleXではなく、centersSplitを使用できるかテスト
       function showYearTitles() {
-        // Another way to do this would be to create
-        // the year texts once and then just hide them.
-        
-        // var yearsData = d3.keys(centersSplit);
-        // var years = svgContainer.selectAll('.year')
-        //   .data(yearsData);
 
-        // years.enter().append('text')
-        //   .attr('class', 'year')
-        //   .attr('x', function (d) { return yearsTitleX[d]; })
-        //   .attr('y', 40)
-        //   .attr('text-anchor', 'middle')
-        //   .text(function (d) { return d; });
-
+        // var yearsData = Object.keys(yearsTitleX);
         var yearsData = Object.keys(centersSplit);
         var years = svgContainer.selectAll('.year')
           .data(yearsData);
 
         years.enter().append('text')
           .attr('class', 'year')
+          //　.attr('x', function (d) { return yearsTitleX[d]; })
           .attr('x', function (d) { return centersSplit[d].x; })
           .attr('y', 40)
           .attr('text-anchor', 'middle')
@@ -229,6 +235,10 @@ function bubbleChart() {
 
 
 
+
+      /* --------------------
+        アニメーション＆配置の実行
+      -------------------- */
 
       chart.toggleDisplay = function (displayName) {
         if (displayName === 'year') {
