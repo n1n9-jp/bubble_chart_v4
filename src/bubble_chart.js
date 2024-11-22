@@ -31,7 +31,7 @@ var BubbleChartObject = function () {
     // flag
     var buttonId = "";
 
-    // var
+    // パラメーター：シミュレーション
     var forceStrength = 0.03;
 
 
@@ -76,8 +76,7 @@ var BubbleChartObject = function () {
             .exponent(0.5)
             .range([2, 85])
             .domain([0, d3.max(dataAll, function(d) { 
-            // console.log("d", d);
-            return parseFloat(d.total_amount) || 0; 
+                return parseFloat(d.total_amount) || 0; 
             })]);
         
         // ノードの配列を作成
