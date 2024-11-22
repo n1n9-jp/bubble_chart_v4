@@ -1,13 +1,27 @@
 /* -----
-container
+basic
 ----- */
+
 body {
   background-color: #AAA;
 }
 
+a, a:visited, a:active {
+  color: #444;
+}
+
+
+
+/* -----
+container
+----- */
+
+.container {
+  max-width: 900px;
+  margin: auto;
+}
+
 #vis {
-  /* width: 940px;
-  height: 600px; */
   display: flex;
   justify-content: center;
   width: 100%;
@@ -20,6 +34,8 @@ body {
   background-color: #FFF;
 }
 
+
+
 /* -----
 toolbar
 ----- */
@@ -28,6 +44,11 @@ toolbar
   margin-top: 10px;
 }
 
+
+
+/* -----
+tooltip
+----- */
 .tooltip {
 	position: absolute;
 	top: 100px;
@@ -52,19 +73,11 @@ toolbar
   font-weight:bold;
 }
 
+
+
 /* -----
-misc
+ｂｔｎ
 ----- */
-
-a, a:visited, a:active {
-  color: #444;
-}
-
-.container {
-  max-width: 900px;
-  margin: auto;
-}
-
 .button {
   min-width: 130px;
   padding: 4px 5px;
@@ -80,8 +93,6 @@ a, a:visited, a:active {
   color: #fff;
 }
 
-.year {
-  font-size: 21px;
-  fill: #aaa;
-  cursor: default;
-}
+
+
+
