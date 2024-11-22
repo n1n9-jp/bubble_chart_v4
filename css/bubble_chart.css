@@ -6,6 +6,14 @@ a, a:visited, a:active {
   max-width: 900px;
   margin: auto;
 }
+#vis {
+  /* width: 940px;
+  height: 600px; */
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  clear: both;
+  margin-bottom: 10px;
 
 .button {
   min-width: 130px;
@@ -20,15 +28,10 @@ a, a:visited, a:active {
 .button.active {
   background: #000;
   color: #fff;
+#svgArea {
+  background-color: #FFF;
 }
 
-
-#vis {
-  width: 940px;
-  height: 600px;
-  clear: both;
-  margin-bottom: 10px;
-}
 
 #toolbar {
   margin-top: 10px;

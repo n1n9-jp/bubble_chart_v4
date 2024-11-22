@@ -8,7 +8,7 @@ var BubbleChartObject = function () {
     var dataMod = [];
 
     // 初期値：ビューポート
-    var width = 940;
+    var width = 1200;
     var height = 600;
 
     // 初期値：ツールチップ
@@ -27,6 +27,7 @@ var BubbleChartObject = function () {
     // SVGコンテナー
     var svgContainer = null;
     var bubbles = null;
+    var aspect = 1;
 
     // flag
     var buttonId = "";
@@ -60,14 +61,36 @@ var BubbleChartObject = function () {
         this.e.subscribe('toggle:display', this.toggleDisplay);
         this.e.subscribe('load:data', this.loadData);
         this.e.subscribe('setup:buttons', this.setupButtons);
+        this.e.subscribe('resize:svg', this.resizeSvg); // 追加
 
         this.e.publish('setup:buttons');
         this.e.publish('load:data');
+
+        window.addEventListener('resize', () => {
+            this.e.publish('resize:svg');
+        });
     };
 
 
 
-    // ノードの作成
+    this.resizeSvg = function() {
+
+        console.log("resizeSvg...");
+
+        let _container = document.getElementById('visArea');
+        width = _container.offsetWidth;
+        height = Math.round(width / aspect);
+
+        let _chart = document.getElementById('svgArea');
+        _chart.setAttribute('width', width);
+        _chart.setAttribute('height', height);
+        _chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+        self.e.publish('toggle:display');
+    }
+
+
+
     this.createNodes = function() {
         console.log("createNodes...");
 
