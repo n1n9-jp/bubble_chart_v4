@@ -87,7 +87,7 @@ var BubbleChartObject = function () {
         _chart.setAttribute('height', height);
         _chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-        self.e.publish('toggle:display');
+        self.e.publish('create:chart');
     }
 
 
@@ -224,7 +224,7 @@ var BubbleChartObject = function () {
                 buttonSelected = button.attr('id');
                 console.log("buttonSelected", buttonSelected);
 
-                self.e.publish('toggle:display');
+                self.e.publish('create:chart');
             });
     };
 
