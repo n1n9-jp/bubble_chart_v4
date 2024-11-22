@@ -92,13 +92,11 @@ var BubbleChartObject = function () {
         });
         console.log("dataMod", dataMod);
 
-        // グローバルnodesを使用してチャートを作成
         self.e.publish('create:chart', dataMod);
     };
 
 
 
-    // チャートの作成
     this.createChart = function(data) {
         console.log("createChart...");
 
@@ -112,11 +110,10 @@ var BubbleChartObject = function () {
             .attr("viewBox", "0 0 "+ width + " " + height)
             .attr("preserveAspectRatio", "xMidYMid");
 
-        // dataModを直接使用
         bubbles = svgContainer.selectAll('.bubble')
             .data(dataMod, function (d) { return d.id; });
 
-        var bubblesE = bubbles.enter().append('circle')
+        var bubblesEnters = bubbles.enter().append('circle')
             .classed('bubble', true)
             .attr('r', 0)
             .attr('fill', function (d) { return fillColor(d.group); })
@@ -125,7 +122,7 @@ var BubbleChartObject = function () {
             .on('mouseover', showDetail)
             .on('mouseout', hideDetail);
 
-        bubbles = bubbles.merge(bubblesE);
+        bubbles = bubbles.merge(bubblesEnters);
 
         bubbles.transition()
             .duration(2000)
@@ -192,7 +189,6 @@ var BubbleChartObject = function () {
 
 
 
-    // ヘルパー関数
     function charge(d) {
         return -Math.pow(d.radius, 2.0) * forceStrength;
     }
