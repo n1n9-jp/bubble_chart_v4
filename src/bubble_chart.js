@@ -10,6 +10,7 @@ var BubbleChartObject = function () {
     // 初期値：ビューポート
     var width = 1200;
     var height = 600;
+    var aspect = 1;
 
     // 初期値：ツールチップ
     var tooltip = floatingTooltip('gates_tooltip', 240);
@@ -27,22 +28,18 @@ var BubbleChartObject = function () {
     // SVGコンテナー
     var svgContainer = null;
     var bubbles = null;
-    var aspect = 1;
 
     // flag
-    var buttonId = "";
+    var buttonSelected = "all";
 
-    // パラメーター：シミュレーション
+    // シミュレーション
     var forceStrength = 0.03;
-
-    // シミュレーションの設定
     var simulation = d3.forceSimulation()
         .velocityDecay(0.2)
         .force('x', d3.forceX().strength(forceStrength).x(centersDefault.x))
         .force('y', d3.forceY().strength(forceStrength).y(centersDefault.y))
         .force('charge', d3.forceManyBody().strength(charge))
         .on('tick', ticked);
-
     simulation.stop();
 
     // スケール：色
@@ -56,13 +53,17 @@ var BubbleChartObject = function () {
     this.init = function () {
         console.log("init...");
 
-        this.e.subscribe('create:nodes', this.createNodes);
-        this.e.subscribe('create:chart', this.createChart);
-        this.e.subscribe('toggle:display', this.toggleDisplay);
-        this.e.subscribe('load:data', this.loadData);
-        this.e.subscribe('setup:buttons', this.setupButtons);
-        this.e.subscribe('resize:svg', this.resizeSvg); // 追加
+        // 一度のみ実行する内容
+        this.e.subscribe('setup:buttons', this.setupButtons); //ボタンのインタラクション設定
+        this.e.subscribe('load:data', this.loadData); //データファイルの読み込み
+        this.e.subscribe('create:nodes', this.createNodes); //バブルデータの生成
+        this.e.subscribe('create:chart', this.createChart); // SVGの生成・更新
 
+        // 繰り返し実行する内容
+        // this.e.subscribe('toggle:display', this.toggleDisplay); //押下ボタンの評価
+        this.e.subscribe('resize:svg', this.resizeSvg); //ブラウザ・リサイズ時の挙動
+
+        // 実行
         this.e.publish('setup:buttons');
         this.e.publish('load:data');
 
@@ -79,7 +80,7 @@ var BubbleChartObject = function () {
 
         let _container = document.getElementById('visArea');
         width = _container.offsetWidth;
-        height = Math.round(width / aspect);
+        height = Math.round(width/aspect);
 
         let _chart = document.getElementById('svgArea');
         _chart.setAttribute('width', width);
@@ -152,21 +153,38 @@ var BubbleChartObject = function () {
             .attr('r', function (d) { return d.radius; });
 
         simulation.nodes(dataMod);
-        groupBubbles();
+
+
+
+        /* -----
+        select group layout
+        ----- */
+
+        if (buttonSelected === 'year') {
+            splitBubbles();
+        } else if (buttonSelected === 'new') {
+            console.log("New Dimension...")
+        } else if (buttonSelected === 'all') {
+            groupBubbles();
+        }
+
     };
 
 
 
     // 表示の切り替え
-    this.toggleDisplay = function() {
-        console.log("toggleDisplay");
+    // this.toggleDisplay = function() {
+    //     console.log("toggleDisplay");
 
-        if (buttonId === 'year') {
-            splitBubbles();
-        } else {
-            groupBubbles();
-        }
-    };
+    //     if (buttonSelected === 'year') {
+    //         splitBubbles();
+
+    //     } else if (buttonSelected === 'new') {
+    //         console.log("New Dimension...")
+    //     } else {
+    //         groupBubbles();
+    //     }
+    // };
 
 
 
@@ -203,8 +221,8 @@ var BubbleChartObject = function () {
                 d3.selectAll('.button').classed('active', false);
                 var button = d3.select(this);
                 button.classed('active', true);
-                buttonId = button.attr('id');
-                console.log("buttonId", buttonId);
+                buttonSelected = button.attr('id');
+                console.log("buttonSelected", buttonSelected);
 
                 self.e.publish('toggle:display');
             });
