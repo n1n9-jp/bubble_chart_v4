@@ -5,7 +5,7 @@ var BubbleChartObject = function () {
 
     // データ・コンテナー
     var dataAll;
-    var nodes = [];
+    var dataMod = [];
 
     // 初期値：ビューポート
     var width = 940;
@@ -33,7 +33,6 @@ var BubbleChartObject = function () {
 
     // パラメーター：シミュレーション
     var forceStrength = 0.03;
-
 
     // シミュレーションの設定
     var simulation = d3.forceSimulation()
@@ -79,8 +78,7 @@ var BubbleChartObject = function () {
                 return parseFloat(d.total_amount) || 0; 
             })]);
         
-        // ノードの配列を作成
-        nodes = dataAll.map(function (d) {
+        dataMod = dataAll.map(function (d) {
             return {
                 id: d.id,
                 radius: radiusScale(+d.total_amount),
@@ -92,9 +90,10 @@ var BubbleChartObject = function () {
                 y: Math.random() * 800
             };
         });
+        console.log("dataMod", dataMod);
 
         // グローバルnodesを使用してチャートを作成
-        self.e.publish('create:chart', nodes);
+        self.e.publish('create:chart', dataMod);
     };
 
 
@@ -113,9 +112,9 @@ var BubbleChartObject = function () {
             .attr("viewBox", "0 0 "+ width + " " + height)
             .attr("preserveAspectRatio", "xMidYMid");
 
-        // nodesを直接使用
+        // dataModを直接使用
         bubbles = svgContainer.selectAll('.bubble')
-            .data(nodes, function (d) { return d.id; });
+            .data(dataMod, function (d) { return d.id; });
 
         var bubblesE = bubbles.enter().append('circle')
             .classed('bubble', true)
@@ -132,7 +131,7 @@ var BubbleChartObject = function () {
             .duration(2000)
             .attr('r', function (d) { return d.radius; });
 
-        simulation.nodes(nodes);
+        simulation.nodes(dataMod);
         groupBubbles();
     };
 
