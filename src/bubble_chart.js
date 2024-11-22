@@ -54,16 +54,16 @@ var BubbleChartObject = function () {
         console.log("init...");
 
         // 一度のみ実行する内容
-        this.e.subscribe('setup:buttons', this.setupButtons); //ボタンのインタラクション設定
+        this.e.subscribe('init:buttons', this.initButtons); //ボタンのインタラクション設定
         this.e.subscribe('load:data', this.loadData); //データファイルの読み込み
         this.e.subscribe('create:nodes', this.createNodes); //バブルデータの生成
 
         // 繰り返し実行する内容
-        this.e.subscribe('create:chart', this.createChart); // SVGの生成・更新
+        this.e.subscribe('generate:chart', this.generateChart); // SVGの生成・更新
         this.e.subscribe('resize:svg', this.resizeSvg); //ブラウザ・リサイズ時の挙動
 
         // 実行
-        this.e.publish('setup:buttons');
+        this.e.publish('init:buttons');
         this.e.publish('load:data');
 
         window.addEventListener('resize', () => {
@@ -73,21 +73,44 @@ var BubbleChartObject = function () {
 
 
 
-    this.resizeSvg = function() {
+    this.initButtons = function() {
+        console.log("initButtons");
 
-        console.log("resizeSvg...");
+        d3.select('#toolbar')
+            .selectAll('.button')
+            .on('click', function (event) {
 
-        let _container = document.getElementById('visArea');
-        width = _container.offsetWidth;
-        height = Math.round(width/aspect);
+                d3.selectAll('.button').classed('active', false);
+                var button = d3.select(this);
+                button.classed('active', true);
+                buttonSelected = button.attr('id');
+                console.log("buttonSelected", buttonSelected);
 
-        let _chart = document.getElementById('svgArea');
-        _chart.setAttribute('width', width);
-        _chart.setAttribute('height', height);
-        _chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+                self.e.publish('generate:chart');
+            });
+    };
 
-        self.e.publish('create:chart');
-    }
+
+
+    this.loadData = function() {
+        console.log("loadData");
+
+        d3.csv('./data/data.csv')
+            .then(function(data) {
+
+                data.forEach(function(d) {
+                    d.total_amount = parseInt(d.total_amount);
+                });
+
+                dataAll = data;
+                console.log("data loaded.", data);
+
+                self.e.publish('create:nodes', data);
+            })
+            .catch(function(error) {
+                console.error("Error loading CSV:", error);
+            });
+    };
 
 
 
@@ -115,13 +138,13 @@ var BubbleChartObject = function () {
         });
         console.log("dataMod", dataMod);
 
-        self.e.publish('create:chart', dataMod);
+        self.e.publish('generate:chart', dataMod);
     };
 
 
 
-    this.createChart = function(data) {
-        console.log("createChart...");
+    this.generateChart = function(data) {
+        console.log("generateChart...");
         
         if (!svgContainer) {
             svgContainer = d3.select('#vis')
@@ -171,48 +194,28 @@ var BubbleChartObject = function () {
 
 
 
-    // データの読み込み
-    this.loadData = function() {
-        console.log("loadData");
+    this.resizeSvg = function() {
 
-        d3.csv('./data/data.csv')
-            .then(function(data) {
+        console.log("resizeSvg...");
 
-                data.forEach(function(d) {
-                    d.total_amount = parseInt(d.total_amount);
-                });
+        let _container = document.getElementById('visArea');
+        width = _container.offsetWidth;
+        height = Math.round(width/aspect);
 
-                dataAll = data;
-                console.log("data loaded.", data);
+        let _chart = document.getElementById('svgArea');
+        _chart.setAttribute('width', width);
+        _chart.setAttribute('height', height);
+        _chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-                self.e.publish('create:nodes', data);
-            })
-            .catch(function(error) {
-                console.error("Error loading CSV:", error);
-            });
-    };
+        self.e.publish('generate:chart');
+    }
 
 
 
-    this.setupButtons = function() {
-        console.log("setupButtons");
-
-        d3.select('#toolbar')
-            .selectAll('.button')
-            .on('click', function (event) {
-
-                d3.selectAll('.button').classed('active', false);
-                var button = d3.select(this);
-                button.classed('active', true);
-                buttonSelected = button.attr('id');
-                console.log("buttonSelected", buttonSelected);
-
-                self.e.publish('create:chart');
-            });
-    };
-
-
-
+    /* ---------------
+    utility functions
+    --------------- */
+    
     function charge(d) {
         return -Math.pow(d.radius, 2.0) * forceStrength;
     }
