@@ -251,8 +251,8 @@ var BubbleChartObject = function () {
     }
 
     function hideDetail(d) {
-      d3.select(this).attr('stroke', d3.rgb(fillColor(d.group)).darker());
-      tooltip.hideTooltip();
+        d3.select(this).attr('stroke', d3.rgb(fillColor(d.group)).darker());
+        tooltip.hideTooltip();
     }
 
     function addCommas(nStr) {
