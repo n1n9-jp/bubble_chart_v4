@@ -57,10 +57,9 @@ var BubbleChartObject = function () {
         this.e.subscribe('setup:buttons', this.setupButtons); //ボタンのインタラクション設定
         this.e.subscribe('load:data', this.loadData); //データファイルの読み込み
         this.e.subscribe('create:nodes', this.createNodes); //バブルデータの生成
-        this.e.subscribe('create:chart', this.createChart); // SVGの生成・更新
 
         // 繰り返し実行する内容
-        // this.e.subscribe('toggle:display', this.toggleDisplay); //押下ボタンの評価
+        this.e.subscribe('create:chart', this.createChart); // SVGの生成・更新
         this.e.subscribe('resize:svg', this.resizeSvg); //ブラウザ・リサイズ時の挙動
 
         // 実行
@@ -123,16 +122,16 @@ var BubbleChartObject = function () {
 
     this.createChart = function(data) {
         console.log("createChart...");
-
-        d3.select('#vis svg').remove();
         
-        svgContainer = d3.select('#vis')
-            .append('svg')
-            .attr('width', width)
-            .attr('height', height)
-            .attr("id", "svgArea")
-            .attr("viewBox", "0 0 "+ width + " " + height)
-            .attr("preserveAspectRatio", "xMidYMid");
+        if (!svgContainer) {
+            svgContainer = d3.select('#vis')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .attr("id", "svgArea")
+                .attr("viewBox", "0 0 "+ width + " " + height)
+                .attr("preserveAspectRatio", "xMidYMid");
+        }
 
         bubbles = svgContainer.selectAll('.bubble')
             .data(dataMod, function (d) { return d.id; });
@@ -169,22 +168,6 @@ var BubbleChartObject = function () {
         }
 
     };
-
-
-
-    // 表示の切り替え
-    // this.toggleDisplay = function() {
-    //     console.log("toggleDisplay");
-
-    //     if (buttonSelected === 'year') {
-    //         splitBubbles();
-
-    //     } else if (buttonSelected === 'new') {
-    //         console.log("New Dimension...")
-    //     } else {
-    //         groupBubbles();
-    //     }
-    // };
 
 
 
